@@ -10,69 +10,54 @@
 <body>
     <canvas id="canvas" width="100" height="100"></canvas>
     <script>
-        // 获取到canvas元素
         let canvas = document.getElementById("canvas");
-        // 获取到当前页面的宽和高 将它们的值赋予画板
+        
         canvas.width = document.documentElement.clientWidth;
         canvas.height = document.documentElement.clientHeight; 
         
         let ctx = canvas.getContext("2d");
         ctx.fillStyle = "black";
         ctx.strokeStyle = "none"
-        // 画的线宽
         ctx.lineWidth = 5
-        // 线的末端以圆形结束
         ctx.lineCap = "round"
-
-        // 构造一个画线函数，起点为（x1,y1）,终点为（x2, y2）
+        
         function drawLine(x1, y1, x2, y2) {
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
             ctx.stroke();
         }
-
-        // 设置一个flag来指示什么时候开始/停止画线
+ 
         let painting = false
 
-        // 判断是触摸屏设备还是鼠标设备
         let isTouchDevice = 'ontouchstart' in document.documentElement;
         if(isTouchDevice) {
-            // 触摸的开始时间点
             canvas.ontouchstart = (e) =>{
-                // 获取到第一个手指触摸的坐标
                 let x = e.touches[0].clientX
                 let y = e.touches[0].clientY
                 last = [x, y]
             }
-            // 当手指开始移动
+
             canvas.ontouchmove = (e) => {
                 let x = e.touches[0].clientX
                 let y = e.touches[0].clientY
                 drawLine(last[0], last[1], x, y)
-                // 将当前的坐标作为上一个点的坐标
                 last = [x, y]
             } 
         } else {
-            // 当鼠标按下
             canvas.onmousedown = (e) => {
-                // 表示在绘画中
                 painting = true
                 last = [e.clientX, e.clientY]
             }
-
-            // 当鼠标移动
+            
             canvas.onmousemove = (e) => {
                 if(painting === true) {
                     drawLine(last[0], last[1], e.clientX, e.clientY)
-                    // 将当前的坐标作为上一个点的坐标
                     last = [e.clientX, e.clientY]
                 } 
             }
 
-            // 当鼠标放开
             canvas.onmouseup = () => {
-                // 表示停止绘画
                 painting = false
             }
     }
